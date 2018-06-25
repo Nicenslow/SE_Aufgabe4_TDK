@@ -15,7 +15,7 @@ using namespace std;
 
 unsigned short correctHight[] = { 3373, 3402, 3690, 3402, 3076, 3773 };
 unsigned short currentHight = 0;
-
+HoehenPlugin_States currentState;
 
 HoehenPlugin::HoehenPlugin(FestoProcessAccess *process) {
 	currentState = Start;
@@ -32,7 +32,7 @@ void HoehenPlugin::evalCycle() {
 		switch (currentState) {
 		case Start:
 			waitForEdge(0);
-			currentState = ErsteFlanke;
+				currentState = ErsteFlanke;
 			break;
 		case ErsteFlanke:
 			if (currentHight != correctHight[1])
@@ -110,11 +110,11 @@ bool HoehenPlugin::result() {
 
 void HoehenPlugin::driveback() {
 	process->driveLeft();
-	while (!process->isItemAtBeginning);
+	while (!process->isItemAtBeginning());
 }
 
-void HoehenPlugin::waitForEdge(int EdgeCounter) {
-	unsigned short currentHight = process->getHight();
+bool HoehenPlugin::waitForEdge(int EdgeCounter) {
+	currentHight = process->getHight();
 	while (evalCurrentHight(currentHight, correctHight[EdgeCounter])) { // vllt als funktion auslagern
 		currentHight = process->getHight();
 	}
@@ -123,6 +123,11 @@ void HoehenPlugin::waitForEdge(int EdgeCounter) {
 bool HoehenPlugin::evalCurrentHight(unsigned short bausteinhoehe, unsigned short vorgegebeneHoeheMax) {
 	return ((bausteinhoehe > (vorgegebeneHoeheMax - 60)) && (bausteinhoehe < (vorgegebeneHoeheMax + 60))); // 60 als konstante angeben
 }
+
+HoehenPlugin_States HoehenPlugin::getCurrentState() {
+	return currentState;
+}
+	
 
 
 

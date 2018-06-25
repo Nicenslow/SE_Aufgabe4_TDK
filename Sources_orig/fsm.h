@@ -12,8 +12,9 @@
 #define	FSM_H
 #include "FestoProcessAccess.h"
 #include "plugin.h"
+#include "hoehenPlugin.h"
 
-enum fsm_states { Start, Standby, Ready, Transport, MetalDetection, NonMetalic, Metalic, SlideReached, Error, EndReached};
+enum fsm_states {Start, Standby, Ready, Transport, MetalDetection, NonMetalic, Metalic, SlideReached, Error, EndReached};
 
 class FSM {
 private:
@@ -23,6 +24,8 @@ private:
 public:
     FSM( FestoProcessAccess *process, Plugin* plugin);
     ~FSM();
+	fsm_states getCurrentState();
+	HoehenPlugin_States getHoehenPluginState();
     void eval();
 private:
     void evalEvents();

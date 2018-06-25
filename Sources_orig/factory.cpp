@@ -11,6 +11,8 @@
 #include "factory.h"
 #include "FestoProcessAccess.h"
 #include "minilab1008processimage.h"
+#include "hoehenPlugin.h"
+#include "DummyProcess.h"
 
 FSM* FSMFactory::createFSM(){
        // Create Objects
@@ -20,3 +22,14 @@ FSM* FSMFactory::createFSM(){
     FSM* fsm = new FSM(processAccess, NULL);
     return fsm;
 }
+
+FSM* FSMFactory::DummyFSM(DummyProcess* processImage) {
+	// Create Objects
+	FestoProcessAccess* processAccess = new FestoProcessAccess(processImage);
+
+	Plugin* plugin = new HoehenPlugin(processAccess);
+
+	FSM* fsm = new FSM(processAccess, plugin);
+	return fsm;
+}
+

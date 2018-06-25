@@ -12,7 +12,7 @@
 
 FSM::FSM(FestoProcessAccess *process, Plugin* plugin = 0) {
     this->process = process;
-    currentState = Start;
+    currentState = fsm_states::Start;
     this->plugin = plugin;
 }
 
@@ -53,10 +53,10 @@ void FSM::evalEvents() {
             }
             break;
         case Transport:
-				plugin->evalCycle();
-				if (!plugin->result()) { 
-					currentState = Error;
-				}
+			plugin->evalCycle();
+			if (!plugin->result()) { 
+				currentState = Error;
+			}
 			
             if (process->isItemAtMetalDetector()) {
                 currentState = MetalDetection;
@@ -116,7 +116,7 @@ void FSM::evalEvents() {
             }
             break;
         default:
-            currentState = Start;
+            currentState = fsm_states::Start;
     }
 }
 
@@ -193,6 +193,18 @@ void FSM::evalState() {
             break;
 
     }
+}
+
+fsm_states FSM::getCurrentState() {
+	return currentState;
+}
+
+HoehenPlugin_States FSM::getHoehenPluginState() {
+	if (dynamic_cast<HoehenPlugin*>(plugin) == nullptr) {
+		return Final;
+	}
+	HoehenPlugin* hp = (HoehenPlugin*)plugin;
+	return hp->getCurrentState();
 }
 
 void FSM::blinkRed() {

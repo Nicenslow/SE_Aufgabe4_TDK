@@ -13,7 +13,7 @@ using namespace std;
 
 enum HoehenPlugin_States {Start,ErsteFlanke,ZweiteFlanke,DritteFlanke,VierteFlanke,FünfteFlanke,DriveBack,Result,Final};
 
-class HoehenPlugin {
+class HoehenPlugin : public Plugin {
 private:
 	HoehenPlugin_States currentState;
 	unsigned short correctHight[6];
@@ -22,11 +22,12 @@ private:
 public:
 	HoehenPlugin(FestoProcessAccess *process);
 	~HoehenPlugin();
+	HoehenPlugin_States getCurrentState();
 	virtual void evalCycle();
 	virtual bool result();
 	virtual bool evalCurrentHight(unsigned short bausteinhoehe, unsigned short vorgegebeneHoeheMax);
 	virtual void driveback();
-	virtual void waitForEdge(int EdgeCounter);
+	virtual bool waitForEdge(int EdgeCounter);
 };
 
 #endif	/* HOEHENPLUGIN_H */

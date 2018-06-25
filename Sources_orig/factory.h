@@ -12,10 +12,12 @@
 #define	FACTORY_H
 
 #include "fsm.h"
+#include "DummyProcess.h"
 
 class FSMFactory{
 public:
 	FSM* createFSM();
+	FSM* DummyFSM(DummyProcess* processImage);
 };
 
 #endif	/* FACTORY_H */
