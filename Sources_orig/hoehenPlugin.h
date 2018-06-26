@@ -11,7 +11,7 @@ using namespace std;
 #ifndef HOEHENPLUGIN_H
 #define	HOEHENPLUGIN_H
 
-enum HoehenPlugin_States {Start,ErsteFlanke,ZweiteFlanke,DritteFlanke,VierteFlanke,FünfteFlanke,DriveBack,Result,Final};
+enum HoehenPlugin_States { Beginn,ErsteFlanke,ZweiteFlanke,DritteFlanke,VierteFlanke,FünfteFlanke,DriveBack,Result,Final };
 
 class HoehenPlugin : public Plugin {
 private:
@@ -27,7 +27,7 @@ public:
 	virtual bool result();
 	virtual bool evalCurrentHight(unsigned short bausteinhoehe, unsigned short vorgegebeneHoeheMax);
 	virtual void driveback();
-	virtual bool waitForEdge(int EdgeCounter);
+	virtual void waitForEdge(int EdgeCounter);
 };
 
 #endif	/* HOEHENPLUGIN_H */

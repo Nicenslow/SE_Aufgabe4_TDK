@@ -23,9 +23,11 @@ FSM::~FSM() {
 
 void FSM::eval() {
     process->updateInputs();
-    if (plugin != NULL) {
-        plugin->evalCycle();
-    }
+	if (plugin == NULL) {
+		printf("no plugin");
+	}
+    /*   plugin->evalCycle();
+    }*/
     evalEvents();
     evalState();
     process->applyOutput();
@@ -116,7 +118,7 @@ void FSM::evalEvents() {
             }
             break;
         default:
-            currentState = fsm_states::Start;
+            currentState = Start;
     }
 }
 

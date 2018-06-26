@@ -16,8 +16,6 @@ class Plugin {
 private:
 	FestoProcessAccess *process;
 public:
-	Plugin(FestoProcessAccess *process);
-	~Plugin();
     virtual void evalCycle() = 0;
     virtual bool result() = 0;
 };

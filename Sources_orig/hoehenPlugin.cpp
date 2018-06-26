@@ -13,13 +13,13 @@ using namespace std;
 #include "hoehenPlugin.h";
 #include "FestoProcessAccess.h"
 
-unsigned short correctHight[] = { 3373, 3402, 3690, 3402, 3076, 3773 };
+unsigned short correctHight[6] = { 3373, 3402, 3690, 3402, 3076, 3773 };
 unsigned short currentHight = 0;
 HoehenPlugin_States currentState;
 
 HoehenPlugin::HoehenPlugin(FestoProcessAccess *process) {
-	currentState = Start;
-	this->process = process;
+	currentState = Beginn;
+	this->process = process;	
 }
 
 HoehenPlugin::~HoehenPlugin() {
@@ -30,12 +30,12 @@ HoehenPlugin::~HoehenPlugin() {
 void HoehenPlugin::evalCycle() {
 	while (currentState != Final) {
 		switch (currentState) {
-		case Start:
+		case Beginn:
 			waitForEdge(0);
-				currentState = ErsteFlanke;
+			currentState = ErsteFlanke;
 			break;
 		case ErsteFlanke:
-			if (currentHight != correctHight[1])
+			if (evalCurrentHight(currentHight, correctHight[1]))
 			{
 				currentState = DriveBack;
 			}
@@ -46,7 +46,7 @@ void HoehenPlugin::evalCycle() {
 			}
 			break;
 		case ZweiteFlanke:
-			if (currentHight != correctHight[2])
+			if (evalCurrentHight(currentHight, correctHight[2]))
 			{
 				currentState = DriveBack;
 			}
@@ -57,7 +57,7 @@ void HoehenPlugin::evalCycle() {
 			}
 			break;
 		case DritteFlanke:
-			if (currentHight != correctHight[3])
+			if (evalCurrentHight(currentHight, correctHight[3]))
 			{
 				currentState = DriveBack;
 			}
@@ -68,7 +68,7 @@ void HoehenPlugin::evalCycle() {
 			}
 			break;
 		case VierteFlanke:
-			if (currentHight != correctHight[4])
+			if (evalCurrentHight(currentHight, correctHight[4]))
 			{
 				currentState = DriveBack;
 			}
@@ -79,7 +79,7 @@ void HoehenPlugin::evalCycle() {
 			}
 			break;
 		case FünfteFlanke:
-			if (currentHight != correctHight[5])
+			if (evalCurrentHight(currentHight, correctHight[5]))
 			{
 				currentState = DriveBack;
 			}
@@ -95,13 +95,15 @@ void HoehenPlugin::evalCycle() {
 		case DriveBack:
 			hightResult = false;
 			driveback();
+			//currentState = Final;
 			break;
 		case Final:
 			break;
 		default:
-			currentState = Start;
+			currentState = Beginn;
 		}
 	}
+	//currentState = Beginn;
 }
 
 bool HoehenPlugin::result() {
@@ -110,10 +112,10 @@ bool HoehenPlugin::result() {
 
 void HoehenPlugin::driveback() {
 	process->driveLeft();
-	while (!process->isItemAtBeginning());
+	//while (!process->isItemAtBeginning());
 }
 
-bool HoehenPlugin::waitForEdge(int EdgeCounter) {
+void HoehenPlugin::waitForEdge(int EdgeCounter) {
 	currentHight = process->getHight();
 	while (evalCurrentHight(currentHight, correctHight[EdgeCounter])) { // vllt als funktion auslagern
 		currentHight = process->getHight();

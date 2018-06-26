@@ -29,6 +29,7 @@ unsigned short getNextHight(FILE *log) {
 	int temp1, temp2, err;
 	int hight;
 	err = fscanf(log, "%i; %i; %i\n", &temp1, &temp2, &hight);
+	//printf("errno: %d", errno);
 	return (err < 3) ? (unsigned short)0 : (unsigned short)hight;
 }
 
@@ -46,7 +47,10 @@ void initSensors(DummyProcess *processImage) {
 
 int testPluginError(FSM *fsm, DummyProcess *processImage, char * filePath) {
 	initSensors(processImage);
-	FILE *log = openLog(filePath);
+	FILE *log = fopen(filePath, "r");
+	if (log == nullptr) {
+		printf("could not open file %s", filePath);
+	}
 
 	processImage->updateChangeImg();
 	fsm->eval();
@@ -89,7 +93,7 @@ int testPluginError(FSM *fsm, DummyProcess *processImage, char * filePath) {
 
 int testPluginSuccess(FSM *fsm, DummyProcess *processImage, bool isMetal) {
 	initSensors(processImage);
-	FILE *log = openLog(const_cast<char *>("../Logs/processlog1.txt"));
+	FILE *log = openLog(const_cast<char *>("Z:\\win\\Desktop\\processlog1.txt"));
 	if (log == NULL) {
 		return -1;
 	}
@@ -101,7 +105,7 @@ int testPluginSuccess(FSM *fsm, DummyProcess *processImage, bool isMetal) {
 	}
 
 	processImage->saveOldImg();
-	processImage->toggleButtonStartBit(false); // press button
+	processImage->toggleButtonStartBit(false); // release start button
 	processImage->updateChangeImg();
 	fsm->eval();
 	if (fsm->getCurrentState() != Ready) {
@@ -113,7 +117,7 @@ int testPluginSuccess(FSM *fsm, DummyProcess *processImage, bool isMetal) {
 	processImage->toggleItemAtBeginningBit(false);
 	processImage->updateChangeImg();
 	fsm->eval();
-	if (fsm->getHoehenPluginState() != Start) {
+	if (fsm->getHoehenPluginState() != Beginn) {
 		return -1;
 	}
 	processImage->toggleItemAtBeginningBit(true);
@@ -128,7 +132,7 @@ int testPluginSuccess(FSM *fsm, DummyProcess *processImage, bool isMetal) {
 		}
 		processImage->updateChangeImg();
 		fsm->eval();
-	} while (!fsm->getHoehenPluginState() == Final);
+	} while (fsm->getHoehenPluginState() != Final);
 
 	if (fsm->getCurrentState() != Transport) {
 		return -1;
@@ -189,7 +193,7 @@ int testPluginSuccess(FSM *fsm, DummyProcess *processImage, bool isMetal) {
 }
 
 int testStartUp(FSM *fsm, DummyProcess *processImage) {
-
+	return 1;
 }
 
 int main(int argc, char **argv) {
@@ -226,7 +230,7 @@ int main(int argc, char **argv) {
 
 		// Start test3
 		if (testPluginError(fsm, processImage,
-			"../Logs/processlog2.txt") != SUCCESSFUL) {
+			"Z:\\win\\Desktop\\processlog2.txt") != SUCCESSFUL) {
 			printf("Error @ Test3!\n");
 		}
 		else {
@@ -238,7 +242,7 @@ int main(int argc, char **argv) {
 
 		// Start test4
 		if (testPluginError(fsm, processImage,
-			"../Logs/processlog3.txt") != SUCCESSFUL) {
+			"Z:\\win\\Desktop\\processlog3.txt") != SUCCESSFUL) {
 			printf("Error @ Test4!\n");
 		}
 		else {
